@@ -1,3 +1,4 @@
+<div style="text-align:center"><img src="Jellypeg.jpg?raw=true" /></div>
 ![alt text](Jellypeg.jpg?raw=true)
 
 # Jellypeg
