@@ -6,9 +6,6 @@
 #Output: image.jpg.php is the file to be used for upload and exploitation
 #Requires: php, php-gd
 
-#This script assumes no special transforming is done on the image for this specific CVE.
-#It can be modified however for different sizes and so on (x,y vars).
-
 ini_set('display_errors', 1);
 error_reporting(E_PARSE);
 
